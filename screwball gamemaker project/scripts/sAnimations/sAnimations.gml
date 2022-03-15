@@ -1,16 +1,25 @@
 /*
 	Function table of contents:
 		player_animations
+		
+		draw_tool
+		draw_shoe
 */
 
 function player_animations(){
 ///@funct			player_animations()
 ///@desc			Process player sprites and animations.
 	
-	if(abs(hinput)){
-		player_facing=hinput;
+	if(dead){
+		//death animation
+		play_animation_stop(sPlayer_death,.2)
 	}
-	image_xscale=player_facing*abs(image_xscale);	
+	else{
+		if(abs(hinput)){
+			player_facing=hinput;//calculate player_facing
+		}
+		image_xscale=player_facing*abs(image_xscale);//apply player_facing
+	}
 }
 
 //DRAW FUNCTIONS

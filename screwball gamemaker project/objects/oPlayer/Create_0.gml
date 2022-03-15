@@ -15,6 +15,8 @@ energy_loss=.5;		//percentage. 0 is super bouncy. 1 is sticky
 frict=.2			//percentage. 0 is sandpaper.	 1 is slippery.
 K_override=-1;		//-1 is no override (can override energy_loss)
 
+collision_object_array=[oCrate,oWall,oShoe];//objects u can collide with (upon creation)
+
 //player_direction
 player_facing=1;//1 is right, -1 is left
 
@@ -23,3 +25,8 @@ holding_inst=noone;//instance_id of object in hand slot.
 in_shoe=true
 no_regrab_time=30;//amount of frames you can't regrab
 no_regrab_timer=0;//initialize timer.
+shoe_jump_cooldown=30;//amount of frames you can't collide w/ shoe
+shoe_jump_cooldown_timer=-1;//initialize timer.
+
+//player state
+dead=false;

@@ -2,12 +2,15 @@
 	Function table of contents:
 		array_addition
 		array_element_multiplication
+		array_concatenate
+		array_remove_values
 		array_scalar
 		magnitude
 		place_meeting_or
-		Physics
+		instance_place_or
+		physics
 		collision
-		Player_Physics
+		player_Physics
 		player_collision
 */
 
@@ -29,6 +32,41 @@ function array_element_multiplication(array1,array2){
 		array1[i]=array1[i]*array2[i];
 	}
 	return array1;
+}
+
+function array_concatenate(array1,array2){
+	//array3 = array1 ->CONCAT-> array2
+	var array3=array_create(array_length(array1)+array_length(array2));//initialize array3
+	for(var i=array_length(array1)-1; i>=0; --i){//loop over array1
+		array3[i]=array1[i];
+	}
+	for(var i=array_length(array2)-1; i>=0; --i){//loop over array2
+		array3[i+array_length(array1)]=array2[i];
+	}
+	return array3;
+}
+
+function array_remove_values(array1,array2){
+	//take away the elements they have in common
+	//in set theory: {array3} = {array1} - {array2}
+	//basically the opposite of concatenate
+	var match=0;
+	var i=0;
+	var array3=array_create(array_length(array1));
+	var count=0;
+	for(var i1=0; i1<=array_length(array1)-1; i1++){//loop over array1
+		match=0;
+		for(var i2=0; i2<=array_length(array2)-1; i2++){//loop over array2
+			match=match||(array1[i1]==array2[i2]);//check across array2 and see if at least 1 is a match
+		}
+		count+=match;//add # of lost elements to count
+		if(!match){
+			array3[i]=array1[i1];
+			i++;
+		}
+	}
+	array_resize(array3,array_length(array1)-count);//resize array to account for lost elements
+	return array3;
 }
 
 function array_scalar(scalar,array){
@@ -220,7 +258,7 @@ function player_physics(collision_objects=[oSolid]){
 ///@funct			player_physics()
 ///@desc			Process player physics movement.
 ///@param {array} collision_objects
-
+	
 	//gravity
 	if(!place_meeting_or(x,y+vsp+global.grav_accel,collision_objects)){
 		vsp+=global.grav_accel;
@@ -236,17 +274,27 @@ function player_physics(collision_objects=[oSolid]){
 		hsp=sign(hsp)*max(abs(hsp)*(1-frict),0);
 	}
 	
-	//process player inputs into movement
-	hsp=clamp(hsp+hinput*ground_accel,-h_top_speed,h_top_speed); //can accelerate to top speed
-	vsp=clamp(vsp,-v_top_speed,v_top_speed);	//gravity within terminal velocity of v_top_speed
-	var _hsp=hsp;
-	//jumping
-	if(on_ground && vinput==-1){//up
-		vsp=-jump_speed;
-		in_shoe=false;
-		instance_create_layer(x,y,"Instances",oShoe);
-		
+	//shoe_jump_cooldown
+	if(shoe_jump_cooldown_timer>0){
+		shoe_jump_cooldown_timer--;
 	}
+	else if(shoe_jump_cooldown_timer==0){
+		collision_object_array=array_concatenate(collision_object_array,[oShoe]);
+		shoe_jump_cooldown_timer--;//will now rest at -1
+	}
+	
+	//process player inputs into movement
+	if(!dead){
+		hsp=clamp(hsp+hinput*ground_accel,-h_top_speed,h_top_speed); //can accelerate to top speed
+		vsp=clamp(vsp,-v_top_speed,v_top_speed);	//gravity within terminal velocity of v_top_speed
+		//jumping
+		if(in_shoe && vinput==-1){//up inuput
+			shoe_jump();
+			shoe_jump_cooldown_timer=shoe_jump_cooldown;
+			collision_objects=array_remove_values(collision_objects,[oShoe]);
+		}
+	}
+	var _hsp=hsp;
 	
 	//colliding with another solid
 	if(place_meeting_or(x+hsp,y+vsp,collision_objects)){
@@ -263,12 +311,24 @@ function player_physics(collision_objects=[oSolid]){
 			player_collision(_instance,"h",K_override);
 		}
 		if(place_meeting_or(x,y+sign(vsp),collision_objects)){
-			player_collision(_instance,"v",K_override);
+			if(sign(vsp)==1 && !in_shoe && !dead){//if we're landing without a shoe
+				if(place_meeting(x,y+1,oShoe)){//if landing on a shoe
+					player_collision(instance_place(x,y+1,oShoe),"v",1)//inelastic collision with shoe
+					instance_destroy(instance_place(x,y+1,oShoe))//destroy shoe
+					in_shoe=true;//we in da shoe now boiis B)
+				}
+				else{
+					player_death();
+				}
+			}
+			else{//if we're not landing without a shoe
+				player_collision(_instance,"v",K_override);
+			}
 		}
 	}
 	
 	if(abs(hinput))
-		hsp=_hsp;
+		hsp=_hsp;//ignore collision hsp change in we're moving on ground
 	
 	//make sure we're not going into any blocks still. (failsafe)
 	if(!place_meeting_or(x+hsp,y,collision_objects))

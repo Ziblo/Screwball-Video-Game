@@ -16,3 +16,5 @@ player_facing=oPlayer.player_facing;//1 is right, -1 is left
 in_shoe=false
 hsp=oPlayer.hsp;
 vsp=oPlayer.vsp;
+
+image_xscale=oPlayer.player_facing;
