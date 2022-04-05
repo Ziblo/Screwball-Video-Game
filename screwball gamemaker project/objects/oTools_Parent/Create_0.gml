@@ -18,3 +18,4 @@ collision_object_array=[oCrate,oWall,oTools_Parent,oShoe];//objects u can collid
 held=false;	//is being held by the player
 drop_hsp=1;		//relative to player(facing) and relative to player hsp
 drop_vsp=-3;	//relative to player vsp
+tool_facing=1;	//1 is right, -1 is left

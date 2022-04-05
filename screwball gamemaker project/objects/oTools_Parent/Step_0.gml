@@ -1,9 +1,23 @@
 /// @desc [insert description here]
 
 //check if we're being held
-held=(oPlayer.holding_inst!=noone && oPlayer.holding_inst==instance_id);
+held=(oPlayer.holding_inst==id);
+
+//check if we're being "used"
+used=(held && oPlayer.use_input);
 
 if(held){
-	//do some tooly thing
+	position_tool()//stay in player's hand
+		
+	///////////////////////
+	//do some tooly thing//
+	///////////////////////
+	
 }
-else physics(collision_object_array);
+else{
+	physics(collision_object_array);
+}
+
+//facing
+image_xscale=tool_facing;
+

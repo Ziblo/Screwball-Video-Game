@@ -12,6 +12,7 @@
 		collision
 		player_Physics
 		player_collision
+		collision_cork_shoot
 */
 
 function array_addition(array1,array2){
@@ -125,9 +126,8 @@ function physics(collision_objects=[oSolid]){
 	
 	//on_ground friction
 	if(on_ground){
-		//basically(hsp -= hsp*frict) except it works in both directions and doesn't go past 0.
-		//hsp loses a fraction of it's magnitude every frame
-		hsp=sign(hsp)*max(abs(hsp)*(1-frict),0);
+		//basically(hsp = hsp-frict) except it works in both directions and doesn't go past 0.
+		hsp=sign(hsp)*max(abs(hsp)-frict,0);
 	}
 	
 	//colliding with another solid
@@ -260,40 +260,34 @@ function player_physics(collision_objects=[oSolid]){
 ///@param {array} collision_objects
 	
 	//gravity
-	if(!place_meeting_or(x,y+vsp+global.grav_accel,collision_objects)){
+	if(apply_gravity){
 		vsp+=global.grav_accel;
 	}
 	
-	//on ground check
-	on_ground=place_meeting_or(x,y+3,collision_objects);
-	
 	//on_ground friction
 	if(on_ground && !abs(hinput)){
-		//basically(hsp -= hsp*frict) except it works in both directions and doesn't go past 0.
-		//hsp loses a fraction of it's magnitude every frame
-		hsp=sign(hsp)*max(abs(hsp)*(1-frict),0);
+		//basically(hsp = hsp-frict) except it works in both directions and doesn't go past 0.
+		hsp=sign(hsp)*max(abs(hsp)-ground_frict,0);
 	}
 	
-	//shoe_jump_cooldown
-	if(shoe_jump_cooldown_timer>0){
-		shoe_jump_cooldown_timer--;
-	}
-	else if(shoe_jump_cooldown_timer==0){
-		collision_object_array=array_concatenate(collision_object_array,[oShoe]);
-		shoe_jump_cooldown_timer--;//will now rest at -1
+	//falling state
+	switch (cork_shoot_falling){
+	    case 1:
+	        //fall at 1x cork_shoot_fall_vsp
+			vsp=cork_shoot_fall_vsp;
+			if(!abs(hinput)){
+				//basically(hsp = hsp-frict) except it works in both directions and doesn't go past 0.
+				hsp=sign(hsp)*max(abs(hsp)-air_frict,0);
+			}
+	        break;
+		case 2:
+			//fall at normal speed
+			vsp+=global.grav_accel;
+	    default:
+	        // 0. Do nothing
+	        break;
 	}
 	
-	//process player inputs into movement
-	if(!dead){
-		hsp=clamp(hsp+hinput*ground_accel,-h_top_speed,h_top_speed); //can accelerate to top speed
-		vsp=clamp(vsp,-v_top_speed,v_top_speed);	//gravity within terminal velocity of v_top_speed
-		//jumping
-		if(in_shoe && vinput==-1){//up inuput
-			shoe_jump();
-			shoe_jump_cooldown_timer=shoe_jump_cooldown;
-			collision_objects=array_remove_values(collision_objects,[oShoe]);
-		}
-	}
 	var _hsp=hsp;
 	
 	//colliding with another solid
@@ -307,28 +301,45 @@ function player_physics(collision_objects=[oSolid]){
 			y+=_dA[1];
 			_d++;//we have traveled 1 unit in the direction of velocity.
 		}
-		if(place_meeting_or(x+sign(hsp),y,collision_objects)){
+		if(place_meeting_or(x+sign(hsp),y,collision_objects)){	//HORIZONTAL COLLISION
 			player_collision(_instance,"h",K_override);
 		}
-		if(place_meeting_or(x,y+sign(vsp),collision_objects)){
+		if(place_meeting_or(x,y+sign(vsp),collision_objects)){	//VERTICAL COLLISION
 			if(sign(vsp)==1 && !in_shoe && !dead){//if we're landing without a shoe
 				if(place_meeting(x,y+1,oShoe)){//if landing on a shoe
 					player_collision(instance_place(x,y+1,oShoe),"v",1)//inelastic collision with shoe
 					instance_destroy(instance_place(x,y+1,oShoe))//destroy shoe
 					in_shoe=true;//we in da shoe now boiis B)
+					cork_shoot_falling=false;
+					sprite_index=sPlayer;
 				}
 				else{
 					player_death();
 				}
 			}
 			else{//if we're not landing without a shoe
-				player_collision(_instance,"v",K_override);
+				player_collision(_instance,"v",K_override);//v collide normally
 			}
 		}
 	}
 	
+	//no friction if I'm trying to move
 	if(abs(hinput))
-		hsp=_hsp;//ignore collision hsp change in we're moving on ground
+		hsp=_hsp;//ignore collision hsp change if we're inputting
+	
+	//cork_shoot_cooldown
+	if(cork_shoot_cooldown_timer>0){
+		cork_shoot_cooldown_timer--;
+	}
+	else if(cork_shoot_cooldown_timer==0){
+		collision_object_array=array_concatenate(collision_object_array,[oShoe]);
+		cork_shoot_cooldown_timer--;//will now rest at -1
+	}
+	
+	//corkshoot fall
+	if(!in_shoe && vsp>0){//if I'm falling w/out a shoe
+		cork_shoot_falling=true;//activate cork_shoot
+	}
 	
 	//make sure we're not going into any blocks still. (failsafe)
 	if(!place_meeting_or(x+hsp,y,collision_objects))
@@ -470,18 +481,29 @@ function player_collision(_instance,h_or_v,_K=-1,_depth=0){
 		}*/
 		
 		//player between two objects
-		if(place_meeting(x+hsp,y,oSolid)&&instance_place(x+hsp,y,oSolid)!=_instance){
+		if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)!=_instance){
 			//collide with that object too
-			var _inst_deeper=instance_place(x+hsp,y,oSolid);
+			var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array);
 			_depth++;
 			player_collision(_inst_deeper,"h",-1,_depth);
 		}
-		if(place_meeting(x,y+vsp,oSolid)&&instance_place(x,y+vsp,oSolid)!=_instance){
+		if(place_meeting_or(x,y+vsp,collision_object_array)&&instance_place_or(x,y+vsp,collision_object_array)!=_instance){
 			//collide with that object too
-			var _inst_deeper=instance_place(x,y+vsp,oSolid);
+			var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array);
 			_depth++;
 			player_collision(_inst_deeper,"v",-1,_depth);
 		}
 
 	}
+}
+
+function collision_cork_shoot(shoe_inst){
+	//momentum problem
+	//we're solving for it so that the player speed after is always the jump speed
+	//(m1+m2)vi=m1v1+m2v2
+	//v2 = (vi(m1+m2)-m1v1)/m2
+	var _player_vsp_after_jump = -oPlayer.jump_speed;
+	shoe_inst.vsp = (oPlayer.vsp*(oPlayer.mass+ shoe_inst.mass)-oPlayer.mass*(_player_vsp_after_jump))/shoe_inst.mass;
+	shoe_inst.hsp = oPlayer.hsp; //hsp does not change
+	oPlayer.vsp=_player_vsp_after_jump;
 }

@@ -1,4 +1,5 @@
 /// @desc set variables
+event_inherited();
 
 //variables
 hsp=0;			//horizontal speed
