@@ -36,10 +36,9 @@ repeat(ds_map_size(background_map)){ //Loop for every background_map starting wi
 	layer_x(_b, background_map[? _b] * _x); //new x is layer *(1+speed)
 	_b = ds_map_find_next(background_map, _b); //...then to the next
 }
-
 /*
 //Parallax! y
-_y += old_y
+var _y = old_y
 var _b = ds_map_find_first(background_map);
 repeat(ds_map_size(background_map)){ //Loop for every background_map starting with first
 	layer_y(_b, background_map[? _b] * _y); //new x is layer *(1+speed)

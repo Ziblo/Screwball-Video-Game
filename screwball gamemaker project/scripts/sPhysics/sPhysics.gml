@@ -500,7 +500,7 @@ function player_collision(_instance,h_or_v,_K=-1,_depth=0){
 function collision_cork_shoot(shoe_inst){
 	//momentum problem
 	//we're solving for it so that the player speed after is always the jump speed
-	//(m1+m2)vi=m1v1+m2v2
+	//(m1+m2)vi = m1v1+m2v2
 	//v2 = (vi(m1+m2)-m1v1)/m2
 	var _player_vsp_after_jump = -oPlayer.jump_speed;
 	shoe_inst.vsp = (oPlayer.vsp*(oPlayer.mass+ shoe_inst.mass)-oPlayer.mass*(_player_vsp_after_jump))/shoe_inst.mass;
