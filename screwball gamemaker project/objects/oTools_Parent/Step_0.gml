@@ -1,7 +1,12 @@
 /// @desc [insert description here]
 
 //check if we're being held
-held=(oPlayer.holding_inst==id);
+if(instance_exists(oPlayer)){
+	held=(oPlayer.holding_inst==id);
+}
+else{
+	held=false
+}
 
 //check if we're being "used"
 used=(held && oPlayer.use_input);

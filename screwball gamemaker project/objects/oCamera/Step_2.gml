@@ -21,9 +21,8 @@ if(instance_exists(oPlayer)){
 	vsp=_distance_y*acceleration;
 	x+=hsp;
 	y+=vsp;
-	camera_set_view_pos(view, x, y);
 }
-
+camera_set_view_pos(view, x, y);
 
 
 
