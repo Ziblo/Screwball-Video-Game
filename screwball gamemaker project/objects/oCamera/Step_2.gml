@@ -1,11 +1,23 @@
-/// @description Insert description here
-// You can write your code in this editor
+/// @description camera zoom and movement
+
+
+
+
+
+// first match the image scale
+view_height = image_yscale*pixel_size_y; //matches the view height to the camera object
+view_width = image_xscale*pixel_size_x; //matches the view width to the camera object
+
+if (view_height!=view_height_old || view_width!=view_width_old){
+	//if view size has changed
+	surface_resize(application_surface, view_width, view_height);
+	
+}
 #macro view view_camera[0]
-camera_set_view_size(view, view_width, view_height); //defined in create
+camera_set_view_size(view, view_width, view_height);//set actual view size
 
 var old_x = x //save these for parallax speed
 var old_y = y
-
 
 
 //to follow player while he's in room
@@ -23,7 +35,8 @@ if(instance_exists(oPlayer)){
 	y+=vsp;
 }
 camera_set_view_pos(view, x, y);
-
+view_height_old=view_height;
+view_width_old=view_width;
 
 
 

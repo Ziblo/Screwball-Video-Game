@@ -34,6 +34,9 @@ if(!dead){
 		cork_shoot_falling=2;//fast fall
 	}
 }
+else{
+	cork_shoot_falling=2;
+}
 
 //process tools
 if(drop_input){

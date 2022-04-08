@@ -1,12 +1,23 @@
 /// @description window size
-// You can write your code in this editor
-view_height = 1080/6;
-view_width = 1920/6;
-window_scale = 6;
 
+
+pixel_size_y=9;
+pixel_size_x=16;
+if(image_xscale != image_yscale){
+	show_error("Aspect ratio not valid. Try checking oCamera scale",false);
+}
+view_height = image_yscale*pixel_size_y; //matches the view height to the camera object
+view_width = image_xscale*pixel_size_x; //matches the view width to the camera object
+view_height_old=view_height;
+view_width_old=view_width;
+//Window Scale is first defined in the object variables
+//how big the window is on your computer screen
+//min so it will fit on your screen if the aspect ratio doesn't match your screen
+//120 = 1920/16 = 1080/9
+window_scale *= min(120/image_yscale,120/image_xscale);
 window_set_size(view_width*window_scale, view_height*window_scale);
+surface_resize(application_surface, view_width, view_height);
 alarm[0]=1; //have to call window_center() one step later *shrug*
-surface_resize(application_surface, view_width*window_scale, view_height*window_scale)
 
 image_alpha=0;
 
