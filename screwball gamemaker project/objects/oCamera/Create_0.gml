@@ -16,7 +16,7 @@ view_width_old=view_width;
 //120 = 1920/16 = 1080/9
 window_scale *= min(120/image_yscale,120/image_xscale);
 window_set_size(view_width*window_scale, view_height*window_scale);
-surface_resize(application_surface, view_width, view_height);
+surface_resize(application_surface, view_width*window_scale, view_height*window_scale);
 alarm[0]=1; //have to call window_center() one step later *shrug*
 
 image_alpha=0;

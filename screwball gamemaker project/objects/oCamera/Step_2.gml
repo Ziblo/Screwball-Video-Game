@@ -10,7 +10,7 @@ view_width = image_xscale*pixel_size_x; //matches the view width to the camera o
 
 if (view_height!=view_height_old || view_width!=view_width_old){
 	//if view size has changed
-	surface_resize(application_surface, view_width, view_height);
+	//surface_resize(application_surface, view_width, view_height);
 	
 }
 #macro view view_camera[0]

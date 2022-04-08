@@ -22,7 +22,7 @@ if(pause_input&&!old_pause_input){//key initial press
 old_pause_input=pause_input;
 
 //RESET
-if(paused&&reset_input){
+if(reset_input){
 	//reset level (FOR DEBUGGING)
 	room_restart();
 }

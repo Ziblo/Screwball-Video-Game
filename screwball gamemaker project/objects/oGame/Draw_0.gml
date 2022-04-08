@@ -14,7 +14,7 @@ if (paused){//paused
 		instance_activate_layer("Instances");
 		surface_set_target(paused_surface);
 		//draw target is now for paused_surface
-		    draw_surface(application_surface, 0, 0);
+		    draw_surface_ext(application_surface, 0, 0, oCamera.image_xscale, oCamera.image_yscale, 0, c_white, 1);
 	    surface_reset_target();
 		instance_deactivate_layer("Instances");
 	}
@@ -25,7 +25,7 @@ if (paused){//paused
 	draw_set_alpha(1);
 	draw_set_halign(fa_center);
 	draw_text_transformed_colour(oCamera.x + oCamera.view_width / 2, oCamera.y + oCamera.view_height / 2 - oCamera.image_yscale, "PAUSED", oCamera.image_xscale/10, oCamera.image_yscale/10, 0, c_aqua, c_aqua, c_aqua, c_aqua, 1);
-	draw_text_transformed_colour(oCamera.x + oCamera.view_width / 2, oCamera.y + oCamera.view_height / 2 + oCamera.image_yscale, "Press spacebar to reset level", oCamera.image_xscale/20, oCamera.image_yscale/20, 0, c_aqua, c_aqua, c_aqua, c_aqua, 1);
+	draw_text_transformed_colour(oCamera.x + oCamera.view_width / 2, oCamera.y + oCamera.view_height / 2 + oCamera.image_yscale, "Press spacebar anytime to reset level", oCamera.image_xscale/30, oCamera.image_yscale/20, 0, c_aqua, c_aqua, c_aqua, c_aqua, 1);
 	draw_set_halign(fa_left);
 }
 
