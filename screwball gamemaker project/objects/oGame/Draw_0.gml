@@ -10,16 +10,19 @@ if (paused){//paused
 		//they either paused initially or minimized and reopened the window.
 		
 		//store a newly created surface's index to paused_surface
-		paused_surface = surface_create(oCamera.view_width,oCamera.view_height);//oCamera.view_width*oCamera.window_scale, oCamera.view_height*oCamera.window_scale);
+		paused_surface = surface_create(oCamera.view_width,oCamera.view_height); //oCamera.view_width*oCamera.window_scale, oCamera.view_height*oCamera.window_scale);
 		instance_activate_layer("Instances");
 		surface_set_target(paused_surface);
 		//draw target is now for paused_surface
-		    draw_surface_ext(application_surface, 0, 0, oCamera.image_xscale, oCamera.image_yscale, 0, c_white, 1);
+			draw_set_alpha(0.5);
+			draw_rectangle_colour(oCamera.x-20, oCamera.y-20, oCamera.x + oCamera.view_width+20, oCamera.y + oCamera.view_height+20, c_white, c_white, c_white, c_white, false);
+		    draw_set_alpha(1);
+			draw_surface_ext(application_surface, 0, 0, 1/oCamera.window_scale, 1/oCamera.window_scale, 0, c_white, 1);
 	    surface_reset_target();
 		instance_deactivate_layer("Instances");
 	}
 	//paused surface DOES exist
-	draw_surface(paused_surface, oCamera.x, oCamera.y);
+	draw_surface_ext(paused_surface, oCamera.x, oCamera.y, 1+0*oCamera.window_scale, 1+0*oCamera.window_scale, 0, c_white, 1);
 	draw_set_alpha(0.5);
 	draw_rectangle_colour(oCamera.x, oCamera.y, oCamera.x + oCamera.view_width, oCamera.y + oCamera.view_height, c_black, c_black, c_black, c_black, false);
 	draw_set_alpha(1);

@@ -3,7 +3,7 @@
 
 pixel_size_y=9;
 pixel_size_x=16;
-if(image_xscale != image_yscale){
+if (image_xscale != image_yscale){
 	show_error("Aspect ratio not valid. Try checking oCamera scale",false);
 }
 view_height = image_yscale*pixel_size_y; //matches the view height to the camera object
