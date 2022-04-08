@@ -17,7 +17,7 @@ if(pause_input&&!old_pause_input){//key initial press
 		//deactivalte instances in the "Instances" layer
 		//This includes everything that moves when the game moves
 	}
-	
+
 }
 old_pause_input=pause_input;
 
