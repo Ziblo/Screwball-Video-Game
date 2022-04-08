@@ -1,4 +1,4 @@
-/// @desc pause or reset
+/// @desc pause, zoom, or reset
 //check for inputs
 reset_input=keyboard_check(vk_space);
 pause_input=keyboard_check(vk_escape);
@@ -22,9 +22,9 @@ if(pause_input&&!old_pause_input){//key initial press
 old_pause_input=pause_input;
 
 //RESET
-if(reset_input){
+if(paused&&reset_input){
 	//reset level (FOR DEBUGGING)
-	
+	room_restart();
 }
 
 //ZOOM

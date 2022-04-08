@@ -28,5 +28,5 @@ no_regrab_time=30;//amount of frames you can't regrab
 no_regrab_timer=0;//initialize timer.
 //shoe
 in_shoe=true;
-cork_shoot_cooldown=30;//amount of frames you can't collide w/ shoe
+cork_shoot_cooldown=4;//amount of frames you can't collide w/ shoe
 cork_shoot_cooldown_timer=-1;//initialize timer.

@@ -24,7 +24,8 @@ if (paused){//paused
 	draw_rectangle_colour(oCamera.x, oCamera.y, oCamera.x + oCamera.view_width, oCamera.y + oCamera.view_height, c_black, c_black, c_black, c_black, false);
 	draw_set_alpha(1);
 	draw_set_halign(fa_center);
-	draw_text_transformed_colour(oCamera.x + oCamera.view_width / 2, oCamera.y + oCamera.view_height / 2, "PAUSED", 2, 2, 0, c_aqua, c_aqua, c_aqua, c_aqua, 1);
+	draw_text_transformed_colour(oCamera.x + oCamera.view_width / 2, oCamera.y + oCamera.view_height / 2 - oCamera.image_yscale, "PAUSED", oCamera.image_xscale/10, oCamera.image_yscale/10, 0, c_aqua, c_aqua, c_aqua, c_aqua, 1);
+	draw_text_transformed_colour(oCamera.x + oCamera.view_width / 2, oCamera.y + oCamera.view_height / 2 + oCamera.image_yscale, "Press spacebar to reset level", oCamera.image_xscale/20, oCamera.image_yscale/20, 0, c_aqua, c_aqua, c_aqua, c_aqua, 1);
 	draw_set_halign(fa_left);
 }
 

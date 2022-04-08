@@ -1,7 +1,8 @@
 /// @desc movement
 
 //GETTING PLAYER INPUTS
-vinput=keyboard_check(ord("S"))-keyboard_check(ord("W")); //down is positive
+up_input=keyboard_check(ord("W"));
+down_input=keyboard_check(ord("S"));
 hinput=keyboard_check(ord("D"))-keyboard_check(ord("A")); //right is positive
 drop_input=keyboard_check(ord("Q"));
 use_input=keyboard_check(ord("E"));
@@ -24,13 +25,13 @@ if(!dead){
 	hsp=clamp(hsp+hinput*ground_accel,-h_top_speed,h_top_speed); //can accelerate to top speed
 	vsp=clamp(vsp,-v_top_speed,v_top_speed);	//vsp within terminal velocity of v_top_speed
 	//cork_shoot
-	if(in_shoe && vinput==-1){//up inuput
+	if(in_shoe && up_input){//up inuput
 		cork_shoot();
 	}
 	if(cork_shoot_falling==1){
 		//air friction
 	}
-	if(cork_shoot_falling && vinput==1){//down input while cork_shoot_falling
+	if(cork_shoot_falling && down_input){//down input while cork_shoot_falling
 		cork_shoot_falling=2;//fast fall
 	}
 }
