@@ -3,6 +3,8 @@
 reset_input=keyboard_check(vk_space);
 pause_input=keyboard_check(vk_escape);
 zoom_input=keyboard_check(vk_up)-keyboard_check(vk_down);
+quit_input=keyboard_check(ord("Q"));
+fullscreen_input=keyboard_check(vk_f11);
 
 //PAUSE
 if(pause_input&&!old_pause_input){//key initial press
@@ -15,6 +17,7 @@ if(pause_input&&!old_pause_input){//key initial press
 	}
 	else{//(paused)
 		//deactivalte instances in the "Instances" layer
+		//instance_deactivate_layer("Instances");
 		//This includes everything that moves when the game moves
 	}
 	
@@ -47,3 +50,17 @@ if(abs(zoom_input)){
 	}
 	
 }
+
+//Quit
+if (paused && quit_input){
+	game_end();
+}
+
+if (fullscreen_input && !old_fullscreen_input){	//initial press
+	//toggle screen_mode
+	oCamera.screen_mode = (oCamera.screen_mode + 1)%2;	//only toggle between fullscreen and windowed
+	with(oCamera){
+		update_screen_mode();
+	}
+}
+old_fullscreen_input=fullscreen_input;

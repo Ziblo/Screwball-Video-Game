@@ -1,18 +1,16 @@
 /// @description camera zoom and movement
 
+// first update view_width to match sprite_width of the oCamera instance
+view_width = sprite_width;		//matches the view width to the camera object
+view_height = sprite_height;	//matches the view height to the camera object
 
-
-
-
-// first match the image scale
-view_height = image_yscale*pixel_size_y; //matches the view height to the camera object
-view_width = image_xscale*pixel_size_x; //matches the view width to the camera object
 
 if (view_height!=view_height_old || view_width!=view_width_old){
 	//if view size has changed
-	//surface_resize(application_surface, view_width, view_height);
-	
 }
+view_height_old=view_height;
+view_width_old=view_width;
+
 #macro view view_camera[0]
 camera_set_view_size(view, view_width, view_height);//set actual view size
 
@@ -29,30 +27,30 @@ if(instance_exists(oPlayer)){
 	//accelerate to goal based on distance.
 	var _distance_x = _goal_x-x;
 	var _distance_y = _goal_y-y;
-	hsp=_distance_x*acceleration;
-	vsp=_distance_y*acceleration;
+	//This is prettymuch a velocity vector field where vv = dd*f
+	//velocity vector is proportional to the distance vecctor
+	hsp=_distance_x*frequency;
+	vsp=_distance_y*frequency;
 	x+=hsp;
 	y+=vsp;
 }
-camera_set_view_pos(view, x, y);
-view_height_old=view_height;
-view_width_old=view_width;
+camera_set_view_pos(view, x, y); //camera view stays with camera object
 
 
 
-
-//Parallax! x
-var _x = old_x
-var _b = ds_map_find_first(background_map);
-repeat(ds_map_size(background_map)){ //Loop for every background_map starting with first
-	layer_x(_b, background_map[? _b] * _x); //new x is layer *(1+speed)
-	_b = ds_map_find_next(background_map, _b); //...then to the next
-}
-/*
-//Parallax! y
-var _y = old_y
-var _b = ds_map_find_first(background_map);
-repeat(ds_map_size(background_map)){ //Loop for every background_map starting with first
-	layer_y(_b, background_map[? _b] * _y); //new x is layer *(1+speed)
-	_b = ds_map_find_next(background_map, _b); //...then to the next
+		//PARALLAX//
+//Functionally our index. (stores the layer_id)
+var _layer = ds_map_find_first(background_distance_M);
+//Loop for every background_map starting with first
+repeat(ds_map_size(background_distance_M)){
+	//temporarily save current position of layer
+	var _Ly = layer_get_y(_layer);
+	var _Lx = layer_get_x(_layer);
+	//shift the layer_x to move proportionally to oCamera.hsp
+	layer_x(_layer, _Lx + background_distance_M[? _layer] * hsp);
+	//shift the layer_y to move proportionally to oCamera.vsp
+	layer_y(_layer, _Ly + background_distance_M[? _layer] * vsp);
+	
+	//move on to next layer_id within the ds_map. Sort of like _b++;
+	_layer = ds_map_find_next(background_distance_M, _layer);
 }

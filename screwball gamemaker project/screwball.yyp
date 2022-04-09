@@ -6,6 +6,7 @@
     {"id":{"name":"oKey","path":"objects/oKey/oKey.yy",},"order":0,},
     {"id":{"name":"sShoe","path":"sprites/sShoe/sShoe.yy",},"order":1,},
     {"id":{"name":"oFlashlight_beam","path":"objects/oFlashlight_beam/oFlashlight_beam.yy",},"order":4,},
+    {"id":{"name":"scrCamera","path":"scripts/scrCamera/scrCamera.yy",},"order":4,},
     {"id":{"name":"oCamera","path":"objects/oCamera/oCamera.yy",},"order":6,},
     {"id":{"name":"sAnimations","path":"scripts/sAnimations/sAnimations.yy",},"order":1,},
     {"id":{"name":"sParallax1","path":"sprites/sParallax1/sParallax1.yy",},"order":0,},
