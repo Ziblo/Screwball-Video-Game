@@ -20,7 +20,7 @@ if(pause_input&&!old_pause_input){//key initial press
 		//instance_deactivate_layer("Instances");
 		//This includes everything that moves when the game moves
 	}
-	
+
 }
 old_pause_input=pause_input;
 
