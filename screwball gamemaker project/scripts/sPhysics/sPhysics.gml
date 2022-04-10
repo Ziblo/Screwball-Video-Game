@@ -254,7 +254,7 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 	}
 }
 
-function player_physics(collision_objects=[oSolid]){
+function player_physics(collision_objects=collision_object_array){
 ///@funct			player_physics()
 ///@desc			Process player physics movement.
 ///@param {array} collision_objects
@@ -305,6 +305,7 @@ function player_physics(collision_objects=[oSolid]){
 			player_collision(_instance,"h",K_override);
 		}
 		if(place_meeting_or(x,y+sign(vsp),collision_objects)){	//VERTICAL COLLISION
+			/* This is the code for landing in the shoe. But I'm moving it over to be a tool collision instead.
 			if(sign(vsp)==1 && !in_shoe && !dead){//if we're landing without a shoe
 				if(place_meeting(x,y+1,oShoe)){//if landing on a shoe
 					player_collision(instance_place(x,y+1,oShoe),"v",1)//inelastic collision with shoe
@@ -319,7 +320,8 @@ function player_physics(collision_objects=[oSolid]){
 			}
 			else{//if we're not landing without a shoe
 				player_collision(_instance,"v",K_override);//v collide normally
-			}
+			}*/
+			player_collision(_instance,"v",K_override);//v collide normally
 		}
 	}
 	

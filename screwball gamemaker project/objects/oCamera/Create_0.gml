@@ -10,6 +10,9 @@ view_width = sprite_width;		//matches the view width to the camera object
 view_height = sprite_height;	//matches the view height to the camera object
 view_height_old = view_height;
 view_width_old = view_width;
+var _game_resolution_a = string_to_array(game_resolution, "x");
+game_resolution_x = string_digits(_game_resolution_a[0]); 
+game_resolution_y = string_digits(_game_resolution_a[1]);
 
 //set initial window size by updating screen mode
 update_screen_mode();			//(function defined in scrCamera)

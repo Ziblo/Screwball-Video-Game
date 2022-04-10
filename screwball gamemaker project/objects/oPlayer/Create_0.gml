@@ -1,5 +1,5 @@
 /// @desc player constants
-event_inherited();
+
 //movement constants
 ground_accel=.2;	//player ground acceleration
 h_top_speed=50;		//player top speed
@@ -25,8 +25,11 @@ player_facing=1;//1 is right, -1 is left
 //tools
 holding_inst=noone;//instance_id of object in hand slot.
 no_regrab_time=30;//amount of frames you can't regrab
-no_regrab_timer=0;//initialize timer.
+
 //shoe
 in_shoe=true;
 cork_shoot_cooldown=4;//amount of frames you can't collide w/ shoe
+
+//INITIALIZE TIMERS
 cork_shoot_cooldown_timer=-1;//initialize timer.
+no_regrab_timer=0;//initialize timer.

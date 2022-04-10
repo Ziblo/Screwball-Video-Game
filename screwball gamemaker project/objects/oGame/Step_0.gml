@@ -34,8 +34,8 @@ if(reset_input){
 if(abs(zoom_input)){
 	with(oCamera){
 		var _zoom = oGame.zoom_input;
-		var _center_x = image_xscale*16/2 // view_width/2
-		var _center_y = image_yscale*9/2 // view_height/2
+		var _center_x = sprite_width/2 // view_width/2
+		var _center_y = sprite_height/2 // view_height/2
 		/*
 		new_center = (imagescale+zoom)*16/2
 		new_width = (imagescale+zoom)*16
@@ -43,8 +43,8 @@ if(abs(zoom_input)){
 		*/
 		image_xscale = max(image_xscale - _zoom,1);
 		image_yscale = max(image_yscale - _zoom,1);
-		var _new_center_x = image_xscale*16/2 // view_width/2
-		var _new_center_y = image_yscale*9/2 // view_height/2
+		var _new_center_x = sprite_width/2 // view_width/2
+		var _new_center_y = sprite_height/2 // view_height/2
 		x += _center_x-_new_center_x;
 		y += _center_y-_new_center_y;
 	}

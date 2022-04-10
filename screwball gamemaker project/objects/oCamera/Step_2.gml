@@ -14,10 +14,6 @@ view_width_old=view_width;
 #macro view view_camera[0]
 camera_set_view_size(view, view_width, view_height);//set actual view size
 
-var old_x = x //save these for parallax speed
-var old_y = y
-
-
 //to follow player while he's in room
 if(instance_exists(oPlayer)){
 	var _goal_x = oPlayer.x + 20*oPlayer.hsp - view_width/2;//goal is centered on the player +20hsp
@@ -33,6 +29,10 @@ if(instance_exists(oPlayer)){
 	vsp=_distance_y*frequency;
 	x+=hsp;
 	y+=vsp;
+}
+else{
+	hsp=0;
+	vsp=0;
 }
 camera_set_view_pos(view, x, y); //camera view stays with camera object
 
