@@ -13,22 +13,25 @@
 #region conditions
 	#region can_hold_tool
 		can_hold_tool = (
-			holding_inst=noone && 
+			holding_inst==noone && 
 			place_meeting(x+hsp,y+vsp,oTools_Parent) &&	
 			no_regrab_timer==0 && 
-			!dead
+			!dead &&
+			use_input
 		);
-#endregion
+	#endregion
 	#region on_ground
 		on_ground =	place_meeting_or(x,y+3,collision_object_array);
-#endregion
+	#endregion
 	#region apply_gravity
 		apply_gravity = ( 
-			!place_meeting_or(x,y+global.grav_accel,collision_object_array) &&
-			!cork_shoot_falling
+			//!place_meeting_or(x,y+global.grav_accel,collision_object_array) &&
+			cork_shoot_falling!=1
 		);
+	#endregion
 #endregion
-#endregion
+
+K_override = -1 + 1*(cork_shoot_falling==2);
 
 //Apply player inputs
 #region Process Inputs
@@ -41,17 +44,17 @@
 		if(in_shoe && up_input){//up inuput
 			cork_shoot();
 		}
-		if(cork_shoot_falling && down_input){//down input while cork_shoot_falling
-			cork_shoot_falling=2;//fast fall
+		if(!in_shoe && vsp>0){//while falling w/out a shoe
+			//either 1 or 2 depending on down input
+			cork_shoot_falling=1+down_input;//fast fall
 		}
-		
 		// TOOL INPUTS //
-		if(drop_input){
+		if(drop_input && holding_inst!=noone){
 			//drop tool
 			drop_tool();
-			mass-=holding_inst.mass;
+			//mass-=holding_inst.mass;
 		}
-		if(use_input){
+		if(use_input && holding_inst!=noone){
 			//use tool
 			use_tool();
 		}
@@ -68,15 +71,15 @@
 
 //Passive tool effects
 #region Process Tools
-if(holding_inst!=noone){//if I'm holding something...
-	mass+=holding_inst.mass;
-}
-
-//no regrab timer
-if(no_regrab_timer>0){//if timer is going
-	no_regrab_timer--;//continue to count down.
-}//otherwise the timer will rest at 0
-
+	if(holding_inst!=noone){//if I'm holding something...
+		//mass+=holding_inst.mass;
+	}
+	
+	//no regrab timer
+	if(no_regrab_timer>0){//if timer is going
+		no_regrab_timer--;//continue to count down.
+	}//otherwise the timer will rest at 0
+	
 #endregion
 
 //Collisions and gravity

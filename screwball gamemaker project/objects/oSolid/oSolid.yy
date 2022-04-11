@@ -28,11 +28,10 @@
     {"varType":0,"value":"0","rangeEnabled":false,"rangeMin":0.0,"rangeMax":10.0,"listItems":[],"multiselect":false,"filters":[],"resourceVersion":"1.0","name":"hsp","tags":[],"resourceType":"GMObjectProperty",},
     {"varType":0,"value":"0","rangeEnabled":false,"rangeMin":0.0,"rangeMax":10.0,"listItems":[],"multiselect":false,"filters":[],"resourceVersion":"1.0","name":"vsp","tags":[],"resourceType":"GMObjectProperty",},
     {"varType":0,"value":"99999","rangeEnabled":false,"rangeMin":0.0,"rangeMax":10.0,"listItems":[],"multiselect":false,"filters":[],"resourceVersion":"1.0","name":"mass","tags":[],"resourceType":"GMObjectProperty",},
-    {"varType":0,"value":".5","rangeEnabled":true,"rangeMin":0.0,"rangeMax":1.0,"listItems":[],"multiselect":false,"filters":[],"resourceVersion":"1.0","name":"energy_loss","tags":[],"resourceType":"GMObjectProperty",},
+    {"varType":0,"value":"0.5","rangeEnabled":true,"rangeMin":0.0,"rangeMax":1.0,"listItems":[],"multiselect":false,"filters":[],"resourceVersion":"1.0","name":"energy_loss","tags":[],"resourceType":"GMObjectProperty",},
     {"varType":0,"value":".5","rangeEnabled":false,"rangeMin":0.0,"rangeMax":10.0,"listItems":[],"multiselect":false,"filters":[],"resourceVersion":"1.0","name":"frict","tags":[],"resourceType":"GMObjectProperty",},
     {"varType":0,"value":"-1","rangeEnabled":true,"rangeMin":-1.0,"rangeMax":1.0,"listItems":[],"multiselect":false,"filters":[],"resourceVersion":"1.0","name":"K_override","tags":[],"resourceType":"GMObjectProperty",},
-    {"varType":6,"value":"oSolid","rangeEnabled":false,"rangeMin":0.0,"rangeMax":10.0,"listItems":[
-        "oSolid",
+    {"varType":6,"value":"oPlayer, oWall, oTools_Parent, oCrate","rangeEnabled":false,"rangeMin":0.0,"rangeMax":10.0,"listItems":[
         "oPlayer",
         "oWall",
         "oTools_Parent",

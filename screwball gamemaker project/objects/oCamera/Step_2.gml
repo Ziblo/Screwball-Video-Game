@@ -19,7 +19,7 @@ if(instance_exists(oPlayer)){
 	var _goal_x = oPlayer.x + 20*oPlayer.hsp - view_width/2;//goal is centered on the player +20hsp
 	var _goal_y = oPlayer.y + 20*oPlayer.vsp - view_height/2;
 	_goal_x += view_width/20*oPlayer.player_facing
-	_goal_y-= view_height/6 - oPlayer.cork_shoot_falling*view_height/3;
+	_goal_y-= view_height/6 - oPlayer.cork_shoot_falling*view_height/6;
 	//accelerate to goal based on distance.
 	var _distance_x = _goal_x-x;
 	var _distance_y = _goal_y-y;

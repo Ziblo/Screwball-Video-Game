@@ -1,4 +1,8 @@
-/// @desc initializeevent_inherited();
+/// @desc initialize
+
+
+
+event_inherited();
 
 
 //physics constants

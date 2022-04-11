@@ -4,7 +4,6 @@
 event_inherited();
 
 if(used && !old_used){
-	old_used=1;
 	//switch toggle
 	beam_toggle=!beam_toggle;
 }

@@ -102,27 +102,32 @@ function instance_place_or(x,y,objects){
 ///@param {real} x
 ///@param {real} y
 ///@param {array} objects
-	var inst = noone
-	for(var i=array_length(objects)-1; i>=0; --i){
+//PROBLEM: does not detect multiple instances of the same object
+	var inst_a = array_create(array_length(objects), noone); //same size as object array, only it will contain the instance values of hits (if there are hits)
+	var o=0; //index for instance array
+	for(var i=0; i<=array_length(objects)-1; ++i){
 		if(place_meeting(x,y,objects[i])){//if there is a hit
-			inst=instance_place(x,y,objects[i])//record that value to inst
+			inst_a[o]=instance_place(x,y,objects[i])//record that value to the instance array
+			o++; //prepare to record next value
 		}//this prioritizes the first objects in the list over the later ones if 2 or more objects are found
 	}
-	return inst;
+	o=max(o,1);//if nothing found, return a noone
+	array_resize(inst_a,o); //cut off extra array spaces
+	return inst_a;
 }
 
-function physics(collision_objects=[oSolid]){
+function physics(collision_objects=collision_object_array){
 ///@funct			physics()
 ///@desc			Process inanimate objects physics.
 ///@param {array} collision_objects
-
-	//gravity
-	if(!place_meeting_or(x,y+vsp+global.grav_accel,collision_objects)){
-		vsp+=global.grav_accel;
-	}
 	
 	//on ground check
 	on_ground=place_meeting_or(x,y+3,collision_objects);
+	
+	//gravity
+	if(!place_meeting_or(x,y+global.grav_accel,collision_objects)){
+		vsp+=global.grav_accel;
+	}
 	
 	//on_ground friction
 	if(on_ground){
@@ -132,7 +137,7 @@ function physics(collision_objects=[oSolid]){
 	
 	//colliding with another solid
 	if(place_meeting_or(x+hsp,y+vsp,collision_objects)){
-		var _instance=instance_place_or(x+hsp,y+vsp,collision_objects); //get what it is you're colliding with
+		var _instance=instance_place_or(x+hsp,y+vsp,collision_objects)[0]; //get what it is you're colliding with
 		
 		//we're gonna go forward by one unit and check if we're colliding until we either reach the distance we would've traveled in that frame anyway, or we hit an object.
 		var _dA=array_scalar(1/magnitude(hsp,vsp),[hsp,vsp]); //determine unit vector of velocity.
@@ -145,9 +150,11 @@ function physics(collision_objects=[oSolid]){
 		}
 		if(place_meeting_or(x+sign(hsp),y,collision_objects)){
 			collision(_instance,"h",K_override);
+			db_col_occ=true;
 		}
 		if(place_meeting_or(x,y+sign(vsp),collision_objects)){
 			collision(_instance,"v",K_override);
+			db_col_occ=true;
 		}
 	}
 	
@@ -225,29 +232,29 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 	_instance.vsp=v2+mass_ratio*(v1-vsp);
 	
 	//round down to 0 when bounce is negligible
-	if(abs(vsp)<.1)
+	if(abs(vsp)<1)
 		vsp=0;
-	if(abs(hsp)<.1)
+	if(abs(hsp)<1)
 		hsp=0;
-	if(abs(_instance.vsp)<.1)
+	if(abs(_instance.vsp)<1)
 		_instance.vsp=0;
-	if(abs(_instance.hsp)<.1)
+	if(abs(_instance.hsp)<1)
 		_instance.hsp=0;
 	
 	
 	if(_depth<3){//this controls the amount of times the function can call itself
 					//...which basically limits the amount of instances any one collision can look at
 		//between two solids horizontally
-		if(place_meeting(x+hsp,y,oSolid)&&instance_place(x+hsp,y,oSolid)!=_instance){
+		if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
 			//collide with other solid
-			var _inst_deeper=instance_place(x+hsp,y,oSolid);
+			var _inst_deeper=instance_place(x+hsp,y,collision_object_array);
 			_depth++;
 			collision(_inst_deeper,"h",-1,_depth);
 		}
 		//between two solids verically
-		if(place_meeting(x,y+vsp,oSolid)&&instance_place(x+hsp,y,oSolid)!=_instance){
+		if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
 			//collide with other solid
-			var _inst_deeper=instance_place(x,y+vsp,oSolid);
+			var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
 			_depth++;
 			collision(_inst_deeper,"v",-1,_depth);
 		}
@@ -282,7 +289,9 @@ function player_physics(collision_objects=collision_object_array){
 	        break;
 		case 2:
 			//fall at normal speed
-			vsp+=global.grav_accel;
+			//added cork_shoot_falling!=1 to the apply_gravity condition in oPlayer/step
+			//vsp+=global.grav_accel;
+			break;
 	    default:
 	        // 0. Do nothing
 	        break;
@@ -292,7 +301,7 @@ function player_physics(collision_objects=collision_object_array){
 	
 	//colliding with another solid
 	if(place_meeting_or(x+hsp,y+vsp,collision_objects)){
-		var _instance=instance_place_or(x+hsp,y+vsp,collision_objects); //get what it is you're colliding with
+		var _instance=instance_place_or(x+hsp,y+vsp,collision_objects)[0]; //get what it is you're colliding with
 		var _dA=array_scalar(1/magnitude(hsp,vsp),[hsp,vsp]); //determine normal vector of velocity.
 		var _D=magnitude(hsp,vsp);//total distance you would travel in that one frame
 		var _d=0//distance you will traveled checking for collisions.
@@ -334,13 +343,8 @@ function player_physics(collision_objects=collision_object_array){
 		cork_shoot_cooldown_timer--;
 	}
 	else if(cork_shoot_cooldown_timer==0){
-		collision_object_array=array_concatenate(collision_object_array,[oShoe]);
+		//collision_object_array=array_concatenate(collision_object_array,[oShoe]);
 		cork_shoot_cooldown_timer--;//will now rest at -1
-	}
-	
-	//corkshoot fall
-	if(!in_shoe && vsp>0){//if I'm falling w/out a shoe
-		cork_shoot_falling=true;//activate cork_shoot
 	}
 	
 	//make sure we're not going into any blocks still. (failsafe)
@@ -483,15 +487,15 @@ function player_collision(_instance,h_or_v,_K=-1,_depth=0){
 		}*/
 		
 		//player between two objects
-		if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)!=_instance){
+		if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
 			//collide with that object too
-			var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array);
+			var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
 			_depth++;
 			player_collision(_inst_deeper,"h",-1,_depth);
 		}
-		if(place_meeting_or(x,y+vsp,collision_object_array)&&instance_place_or(x,y+vsp,collision_object_array)!=_instance){
+		if(place_meeting_or(x,y+vsp,collision_object_array)&&instance_place_or(x,y+vsp,collision_object_array)[0]!=_instance){
 			//collide with that object too
-			var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array);
+			var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
 			_depth++;
 			player_collision(_inst_deeper,"v",-1,_depth);
 		}

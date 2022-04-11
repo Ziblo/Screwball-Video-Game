@@ -1,4 +1,7 @@
-/// @desc initialize tool wide variablesold_used = false; //was it used last frame?
+/// @desc initialize tool wide variables
+
+used = false;		//is it being used this frame?
+old_used = true;	//was it used last frame?
 
 
 

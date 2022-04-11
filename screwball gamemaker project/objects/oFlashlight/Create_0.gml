@@ -1,4 +1,5 @@
-/// @desc create beamevent_inherited()
+/// @desc create beam
+event_inherited();
 
 //every flashlight needs a beam
 //save the instance id of this flashlight's particular beam

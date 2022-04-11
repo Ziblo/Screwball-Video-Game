@@ -1,6 +1,5 @@
 /// @desc pause surface
 
-
 if (paused){//paused
 	if (!surface_exists(paused_surface)){
 		//surface doesn't exist

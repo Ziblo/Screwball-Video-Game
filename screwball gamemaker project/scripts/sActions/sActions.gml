@@ -69,8 +69,7 @@ function cork_shoot(){
 		in_shoe=false;//not in shoe anymore
 		cork_shoot_cooldown_timer=cork_shoot_cooldown;//start cooldown timer
 		collision_object_array=array_remove_values(collision_object_array,[oShoe]);//remove shoe from collision array. (when in cooldown, you can't collide with shoe again)
-		instance_create_layer(x,y,"Instances",oShoe);
-		var _shoe_instance_id = instance_place(x,y,oShoe);
+		var _shoe_instance_id = instance_create_layer(x,y,"Instances",oShoe);
 		_shoe_instance_id.tool_facing=oPlayer.player_facing;
 		collision_cork_shoot(_shoe_instance_id);//takes care of player jump vsp and shoe vsp and hsp
 	}

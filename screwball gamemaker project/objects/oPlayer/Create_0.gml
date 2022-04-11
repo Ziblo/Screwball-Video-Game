@@ -16,7 +16,7 @@ air_frict=.1		//acceleration to 0 when not inputing and cork_shoot_falling
 K_override=-1;		//-1 is no override (can override energy_loss)
 hsp=0;
 vsp=0;
-collision_object_array=[oCrate,oWall,oShoe];//objects u can collide with (upon creation)
+collision_object_array=[oCrate,oWall];//objects u can collide with (upon creation)
 
 //player state constants & variables
 dead=false;
