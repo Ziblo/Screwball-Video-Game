@@ -26,7 +26,7 @@
     {"id":{"name":"sFlashlight_beam","path":"sprites/sFlashlight_beam/sFlashlight_beam.yy",},"order":3,},
     {"id":{"name":"sConditions","path":"scripts/sConditions/sConditions.yy",},"order":3,},
     {"id":{"name":"sPhysics","path":"scripts/sPhysics/sPhysics.yy",},"order":0,},
-    {"id":{"name":"oShoe","path":"objects/oShoe/oShoe.yy",},"order":0,},
+    {"id":{"name":"oShoe","path":"objects/oShoe/oShoe.yy",},"order":5,},
     {"id":{"name":"sWall9","path":"sprites/sWall9/sWall9.yy",},"order":8,},
     {"id":{"name":"oFlashlight","path":"objects/oFlashlight/oFlashlight.yy",},"order":1,},
     {"id":{"name":"sClouds","path":"sprites/sClouds/sClouds.yy",},"order":0,},

@@ -1,8 +1,14 @@
-/// @desc inherit defaults and override them
+/// @desc initialize tool wide variablesold_used = false; //was it used last frame?
 
-// Inherit the parent event
-event_inherited();
-/*
+
+
+
+
+
+
+
+
+/*	desription of all the object variables
 //variables
 hsp=0;			//horizontal speed
 vsp=0;			//vertical speed

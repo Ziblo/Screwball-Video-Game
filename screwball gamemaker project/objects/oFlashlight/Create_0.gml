@@ -1,12 +1,7 @@
-/// @desc 
-
-// Inherit the parent event
-event_inherited();
+/// @desc create beamevent_inherited()
 
 //every flashlight needs a beam
-instance_create_layer(x,y,"Instances",oFlashlight_beam);
 //save the instance id of this flashlight's particular beam
-flashlight_beam_inst=instance_id_get(instance_count-1);
+flashlight_beam_inst = instance_create_layer(x,y,"Instances",oFlashlight_beam);
 
-beam_toggle=false;
-just_used=false;
+beam_toggle=false; //initial beam state of the lught

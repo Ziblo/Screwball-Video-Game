@@ -1,4 +1,6 @@
-/// @desc inherit player speed and stuff
+/// @desc initializeevent_inherited();
+
+
 //physics constants
 mass=10;
 energy_loss=.5;		//percentage. 0 is super bouncy. 1 is sticky
