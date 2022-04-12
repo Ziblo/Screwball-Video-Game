@@ -30,7 +30,9 @@
   ],
   "properties": [],
   "overriddenProperties": [
-    {"propertyId":{"name":"energy_loss","path":"objects/oSolid/oSolid.yy",},"objectId":{"name":"oSolid","path":"objects/oSolid/oSolid.yy",},"value":"0","resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMOverriddenProperty",},
+    {"propertyId":{"name":"energy_loss","path":"objects/oSolid/oSolid.yy",},"objectId":{"name":"oSolid","path":"objects/oSolid/oSolid.yy",},"value":"0.5","resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMOverriddenProperty",},
+    {"propertyId":{"name":"mass","path":"objects/oSolid/oSolid.yy",},"objectId":{"name":"oSolid","path":"objects/oSolid/oSolid.yy",},"value":"6","resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMOverriddenProperty",},
+    {"propertyId":{"name":"frict","path":"objects/oSolid/oSolid.yy",},"objectId":{"name":"oSolid","path":"objects/oSolid/oSolid.yy",},"value":".1","resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMOverriddenProperty",},
   ],
   "parent": {
     "name": "Objects",
