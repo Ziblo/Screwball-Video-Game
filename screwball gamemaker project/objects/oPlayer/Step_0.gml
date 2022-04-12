@@ -25,8 +25,9 @@
 	#endregion
 	#region apply_gravity
 		apply_gravity = ( 
-			//!place_meeting_or(x,y+global.grav_accel,collision_object_array) &&
+			!place_meeting_or(x,y+global.grav_accel,collision_object_array) &&
 			cork_shoot_falling!=1
+			
 		);
 	#endregion
 #endregion

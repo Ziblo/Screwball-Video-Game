@@ -477,7 +477,6 @@ function player_physics(collision_objects=collision_object_array){
 		case 2:
 			//fall at normal speed
 			//added cork_shoot_falling!=1 to the apply_gravity condition in oPlayer/step
-			//vsp+=global.grav_accel;
 			break;
 	    default:
 	        // 0. Do nothing
@@ -507,7 +506,7 @@ function player_physics(collision_objects=collision_object_array){
 				if(place_meeting(x,y+1,oShoe)){//if landing on a shoe
 					player_collision(instance_place(x,y+1,oShoe),"v",1)//inelastic collision with shoe
 					instance_destroy(instance_place(x,y+1,oShoe))//destroy shoe
-					holding_inst=noone;
+					//holding_inst=noone;
 					in_shoe=true;//we in da shoe now boiis B)
 					cork_shoot_falling=false;
 					sprite_index=sPlayer;
