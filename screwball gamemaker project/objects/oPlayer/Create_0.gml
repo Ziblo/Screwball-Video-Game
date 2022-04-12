@@ -20,6 +20,7 @@ vsp=0;
 collision_object_array=[oCrate,oWall];//objects u can collide with (upon creation)
 */
 //player state constants & variables
+hp=max_hp;
 dead=false;
 /*
 player_facing=1;//1 is right, -1 is left
@@ -37,3 +38,4 @@ cork_shoot_cooldown=4;//amount of frames you can't collide w/ shoe
 //INITIALIZE TIMERS
 cork_shoot_cooldown_timer=-1;//initialize timer.
 no_regrab_timer=0;//initialize timer.
+

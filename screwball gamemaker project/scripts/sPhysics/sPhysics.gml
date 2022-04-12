@@ -26,7 +26,6 @@ function array_addition(array1,array2){
 	}
 	return array1;
 }
-
 function array_element_multiplication(array1,array2){
 	if(array_length(array1)!=array_length(array2)){
 		show_error("arrays not same length",true);
@@ -36,7 +35,6 @@ function array_element_multiplication(array1,array2){
 	}
 	return array1;
 }
-
 function array_concatenate(array1,array2){
 	//array3 = array1 ->CONCAT-> array2
 	var array3=array_create(array_length(array1)+array_length(array2));//initialize array3
@@ -48,7 +46,6 @@ function array_concatenate(array1,array2){
 	}
 	return array3;
 }
-
 function array_remove_values(array1,array2){
 	//take away the elements they have in common
 	//in set theory: {array3} = {array1} - {array2}
@@ -71,7 +68,6 @@ function array_remove_values(array1,array2){
 	array_resize(array3,array_length(array1)-count);//resize array to account for lost elements
 	return array3;
 }
-
 function array_scalar(scalar,array){
 ///@param {real} scalar
 ///@param {array} array
@@ -80,7 +76,6 @@ function array_scalar(scalar,array){
 	}
 	return array;
 }
-
 function magnitude(a,b=0){
 	if(is_array(a)){
 		b=a[1];//if a is an array, ignore b and use first two elements of a
@@ -88,7 +83,6 @@ function magnitude(a,b=0){
 	}
 	return sqrt(a*a+b*b);	//thank you, pythagoras
 }
-
 function place_meeting_or(x,y,objects){
 ///@param {real} x
 ///@param {real} y
@@ -99,7 +93,6 @@ function place_meeting_or(x,y,objects){
 	}
 	return boolean;
 }
-
 function instance_place_or(x,y,objects){
 ///@param {real} x
 ///@param {real} y
@@ -117,7 +110,6 @@ function instance_place_or(x,y,objects){
 	array_resize(inst_a,o); //cut off extra array spaces
 	return inst_a;
 }
-
 function physics(collision_objects=collision_object_array){
 ///@funct			physics()
 ///@desc			Process inanimate objects physics.
@@ -170,7 +162,6 @@ function physics(collision_objects=collision_object_array){
 	else
 		vsp=0;
 }
-
 function collision(_instance,h_or_v,_K=-1,_depth=0){
 ///@funct			collision(instance, h or v, K override)
 ///@desc			Process collisions. -K values 
@@ -266,7 +257,6 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 		}
 	}
 }
-
 function physics2(collision_objects=collision_object_array){
 ///@funct			physics()
 ///@desc			Process inanimate objects physics.
@@ -351,7 +341,6 @@ function physics2(collision_objects=collision_object_array){
 	else
 		vsp=0;
 }
-
 function collision2(_instance,h_or_v,_K=-1,_depth=0){
 ///@funct			collision(instance, h or v, K override)
 ///@desc			Process collisions. -K values 
@@ -447,7 +436,6 @@ function collision2(_instance,h_or_v,_K=-1,_depth=0){
 		}
 	}
 }
-
 function player_physics(collision_objects=collision_object_array){
 ///@funct			player_physics()
 ///@desc			Process player physics movement.
@@ -483,7 +471,7 @@ function player_physics(collision_objects=collision_object_array){
 	        break;
 	}
 	
-	var _hsp=hsp;
+	//var _hsp=hsp; This also makes us not bounce off walls
 	
 	//colliding with another solid
 	if(place_meeting_or(x+hsp,y+vsp,collision_objects)){
@@ -496,16 +484,16 @@ function player_physics(collision_objects=collision_object_array){
 			y+=_dA[1];
 			_d++;//we have traveled 1 unit in the direction of velocity.
 		}
-		if(place_meeting_or(x+sign(hsp),y,collision_objects)){	//HORIZONTAL COLLISION
+		if(place_meeting_or(x+sign(hsp),y, collision_objects)){	//HORIZONTAL COLLISION
 			player_collision(_instance,"h",K_override);
 		}
-		if(place_meeting_or(x,y+sign(vsp), array_concatenate(collision_objects,[oShoe]))){	//VERTICAL COLLISION
+		if(place_meeting_or(x,y+sign(vsp), collision_objects)){	//VERTICAL COLLISION
 			
-			// /* This is the code for landing in the shoe. But I'm moving it over to be a tool collision instead.
+			// /* This is the code for landing in the shoe. But I'm gonna move it somewhere else so it's easier to find.
 			if(sign(vsp)==1 && !in_shoe && !dead){//if we're landing without a shoe
-				if(place_meeting(x,y+1,oShoe)){//if landing on a shoe
-					player_collision(instance_place(x,y+1,oShoe),"v",1)//inelastic collision with shoe
-					instance_destroy(instance_place(x,y+1,oShoe))//destroy shoe
+				if(position_meeting(x,y-2,oShoe)){//if landing in a shoe (or holding a shoe)
+					player_collision(instance_position(x,y-2,oShoe),"v",1)//inelastic collision with shoe
+					instance_destroy(instance_position(x,y-2,oShoe))//destroy shoe
 					//holding_inst=noone;
 					in_shoe=true;//we in da shoe now boiis B)
 					cork_shoot_falling=false;
@@ -530,9 +518,11 @@ function player_physics(collision_objects=collision_object_array){
 		}
 	}
 	
+	/* This makes us not bounce off walls if we hold into them
 	//no friction if I'm trying to move
 	if(abs(hinput))
 		hsp=_hsp;//ignore collision hsp change if we're inputting
+	*/
 	
 	//cork_shoot_cooldown
 	if(cork_shoot_cooldown_timer>0){
@@ -553,7 +543,6 @@ function player_physics(collision_objects=collision_object_array){
 	else
 		vsp=0;
 }
-
 function player_collision(_instance,h_or_v,_K=-1,_depth=0){
 ///@funct			player_collision(instance, h or v, K override)
 ///@desc			Process collisions. -K values 
@@ -621,6 +610,10 @@ function player_collision(_instance,h_or_v,_K=-1,_depth=0){
 				_sqrt=0;
 			vsp=(b+sign(v1-v2)*sqrt(_sqrt))/(-2*a);
 			_instance.vsp=v2+mass_ratio*(v1-vsp);
+			
+			if (abs(hinput)){
+				return; //skip this if we tryna move
+			}
 			
 			//horizontal energy loss
 			_K=_K/2;//less horizontal energy loss in vertical collisions
@@ -698,7 +691,6 @@ function player_collision(_instance,h_or_v,_K=-1,_depth=0){
 
 	}
 }
-
 function collision_cork_shoot(shoe_inst){
 	//momentum problem
 	//we're solving for it so that the player speed after is always the jump speed
