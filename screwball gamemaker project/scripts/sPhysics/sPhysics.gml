@@ -10,6 +10,8 @@
 		instance_place_or
 		physics
 		collision
+		physics2
+		collision2
 		player_Physics
 		player_collision
 		collision_cork_shoot
@@ -245,18 +247,203 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 	if(_depth<3){//this controls the amount of times the function can call itself
 					//...which basically limits the amount of instances any one collision can look at
 		//between two solids horizontally
-		if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
-			//collide with other solid
-			var _inst_deeper=instance_place(x+hsp,y,collision_object_array);
-			_depth++;
-			collision(_inst_deeper,"h",-1,_depth);
+		with(_instance){
+			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
+				//collide with other solid
+				var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
+				_depth++;
+				collision(_inst_deeper,"h",-1,_depth);
+				//db_col_count++;
+			}
+			//between two solids verically
+			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
+				//collide with other solid
+				var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
+				_depth++;
+				collision(_inst_deeper,"v",-1,_depth);
+				//db_col_count++;
+			}
 		}
-		//between two solids verically
-		if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
-			//collide with other solid
-			var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
-			_depth++;
-			collision(_inst_deeper,"v",-1,_depth);
+	}
+}
+
+function physics2(collision_objects=collision_object_array){
+///@funct			physics()
+///@desc			Process inanimate objects physics.
+///@param {array} collision_objects
+	
+	//shape = "square";
+	//center_cord=[x+sprite
+	
+	/*
+	if collision==true
+		move_to_collision() //move the object to the brink of collision without actually colliding anything
+		POINTS = find_collision_points() //find point (or points) of contact (along the 4 facces of the rectangle)
+		create a (unit) vector between the collision points and the center of mass. This is our force direction.
+		conserve(momentum && energy)
+		make(force_vector)
+		make(torque_vector)
+		
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//on ground check
+	on_ground=place_meeting_or(x,y+3,collision_objects);
+	
+	//gravity
+	if(!place_meeting_or(x,y+global.grav_accel,collision_objects)){
+		vsp+=global.grav_accel;
+	}
+	
+	//on_ground friction
+	if(on_ground){
+		//basically(hsp = hsp-frict) except it works in both directions and doesn't go past 0.
+		hsp=sign(hsp)*max(abs(hsp)-frict,0);
+	}
+	
+	//colliding with another solid
+	if(place_meeting_or(x+hsp,y+vsp,collision_objects)){
+		var _instance=instance_place_or(x+hsp,y+vsp,collision_objects)[0]; //get what it is you're colliding with
+		
+		//we're gonna go forward by one unit and check if we're colliding until we either reach the distance we would've traveled in that frame anyway, or we hit an object.
+		var _dA=array_scalar(1/magnitude(hsp,vsp),[hsp,vsp]); //determine unit vector of velocity.
+		var _D=magnitude(hsp,vsp);//total distance you would travel in that one frame
+		var _d=0//distance you will traveled checking for collisions.
+		while(!place_meeting_or(x+_dA[0],y+_dA[1],collision_objects) && _d<_D){
+			x+=_dA[0];//inch forward at same slope
+			y+=_dA[1];
+			_d++;//we have traveled 1 unit in the direction of velocity.
+		}
+		if(place_meeting_or(x+sign(hsp),y,collision_objects)){
+			collision(_instance,"h",K_override);
+			db_col_occ=true;
+		}
+		if(place_meeting_or(x,y+sign(vsp),collision_objects)){
+			collision(_instance,"v",K_override);
+			db_col_occ=true;
+		}
+	}
+	
+	//make sure we're not going into any blocks still. (failsafe)
+	if(!place_meeting_or(x+hsp,y,collision_objects))//if the coast is clear, or it's only got an ignore-object
+		x+=hsp;
+	else
+		hsp=0;
+	if(!place_meeting_or(x,y+vsp,collision_objects))
+		y+=vsp;
+	else
+		vsp=0;
+}
+
+function collision2(_instance,h_or_v,_K=-1,_depth=0){
+///@funct			collision(instance, h or v, K override)
+///@desc			Process collisions. -K values 
+///@param {real} inst_id
+///@param {string} h_or_v
+///@param {real} energy_loss %
+
+	//I modeled this calculation in desmos. Here's the link to the desmos thing. x and y are v1 and v2
+	//https://www.desmos.com/calculator/1ojihotgfz
+	if(_K<0)//if override not active
+		_K=min(magnitude(energy_loss,_instance.energy_loss)/1.2,1);//energy lost in collision compares the two constants. the 1.2 can go up sqrt(2) or as low as 1 to adjust
+
+	//which side to solve for
+	switch(h_or_v){
+		case "h":
+			h_or_v=1;
+			break;
+		case "v":
+			h_or_v=-1;
+			break;
+		default:
+			show_error("collision axis not specified",true);
+	}
+	
+	//static vs kinetic friction
+	//kinetic friction is built into the energy loss. (collision loses energy on collision axis and shear axis)
+	var _relative_hsp=hsp-_instance.hsp;
+	var _relative_vsp=vsp-_instance.vsp;
+	//if relative speed is low enough, static friction.
+	if(abs(_relative_vsp)<.1)//basic version of static friction based on only speed.
+		vsp=_instance.vsp;
+	if(abs(_relative_hsp)<.1)
+		hsp=_instance.hsp;
+		
+	//horizontal
+	var v1=hsp;
+	var v2=_instance.hsp;
+	var mass_ratio=mass/_instance.mass;
+	var _Kh=_K*.5*mass*_instance.mass*sqr(v1-v2)/(mass+_instance.mass);
+	var a=1+mass_ratio;
+	var b=-2*mass_ratio*v1-2*v2;
+	var c=(v1*v1)*(mass_ratio-1)+2*v2*v1+2*_Kh/mass;
+	var _sqrt=b*b-4*a*c;
+	if(_sqrt<=0)
+		_sqrt=0;
+	hsp=(b+h_or_v*sign(v1-v2)*sqrt(_sqrt))/(-2*a);
+	_instance.hsp=v2+mass_ratio*(v1-hsp);
+	
+	//vertical
+	var v1=vsp;
+	var v2=_instance.vsp;
+	var mass_ratio=mass/_instance.mass;
+	var _Kv=_K*.5*mass*_instance.mass*sqr(v1-v2)/(mass+_instance.mass);
+	var a=1+mass_ratio;
+	var b=-2*mass_ratio*v1-2*v2;
+	var c=(v1*v1)*(mass_ratio-1)+2*v2*v1+2*_Kv/mass;
+	var _sqrt=b*b-4*a*c;
+	if(_sqrt<=0)
+		_sqrt=0;
+	vsp=(b-h_or_v*sign(v1-v2)*sqrt(_sqrt))/(-2*a);
+	_instance.vsp=v2+mass_ratio*(v1-vsp);
+	
+	//round down to 0 when bounce is negligible
+	if(abs(vsp)<1)
+		vsp=0;
+	if(abs(hsp)<1)
+		hsp=0;
+	if(abs(_instance.vsp)<1)
+		_instance.vsp=0;
+	if(abs(_instance.hsp)<1)
+		_instance.hsp=0;
+	
+	
+	if(_depth<3){//this controls the amount of times the function can call itself
+					//...which basically limits the amount of instances any one collision can look at
+		//between two solids horizontally
+		with(_instance){
+			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
+				//collide with other solid
+				var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
+				_depth++;
+				collision(_inst_deeper,"h",-1,_depth);
+				db_col_count++;
+			}
+			//between two solids verically
+			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
+				//collide with other solid
+				var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
+				_depth++;
+				collision(_inst_deeper,"v",-1,_depth);
+				db_col_count++;
+			}
 		}
 	}
 }
@@ -313,24 +500,34 @@ function player_physics(collision_objects=collision_object_array){
 		if(place_meeting_or(x+sign(hsp),y,collision_objects)){	//HORIZONTAL COLLISION
 			player_collision(_instance,"h",K_override);
 		}
-		if(place_meeting_or(x,y+sign(vsp),collision_objects)){	//VERTICAL COLLISION
-			/* This is the code for landing in the shoe. But I'm moving it over to be a tool collision instead.
+		if(place_meeting_or(x,y+sign(vsp), array_concatenate(collision_objects,[oShoe]))){	//VERTICAL COLLISION
+			
+			// /* This is the code for landing in the shoe. But I'm moving it over to be a tool collision instead.
 			if(sign(vsp)==1 && !in_shoe && !dead){//if we're landing without a shoe
 				if(place_meeting(x,y+1,oShoe)){//if landing on a shoe
 					player_collision(instance_place(x,y+1,oShoe),"v",1)//inelastic collision with shoe
 					instance_destroy(instance_place(x,y+1,oShoe))//destroy shoe
+					holding_inst=noone;
 					in_shoe=true;//we in da shoe now boiis B)
 					cork_shoot_falling=false;
 					sprite_index=sPlayer;
 				}
 				else{
-					player_death();
+					player_collision(_instance,"v",K_override);//collide normally
+					hp--; //lose health
+					if(hp==0) player_death();
 				}
 			}
 			else{//if we're not landing without a shoe
 				player_collision(_instance,"v",K_override);//v collide normally
-			}*/
-			player_collision(_instance,"v",K_override);//v collide normally
+			}//*/
+			if(cork_shoot_falling==2){
+				audio_play_sound(souOuch,1,false);
+			}
+			
+			
+			//player_collision(_instance,"v",K_override);//v collide normally
+			
 		}
 	}
 	

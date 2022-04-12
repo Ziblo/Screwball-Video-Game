@@ -1,10 +1,6 @@
 /// @desc pause, zoom, or reset
 //check for inputs
 
-if (oCrate.db_col_occ){
-	var _bruh=1;
-}
-
 reset_input=keyboard_check(vk_space);
 pause_input=keyboard_check(vk_escape);
 zoom_input=keyboard_check(vk_up)-keyboard_check(vk_down);

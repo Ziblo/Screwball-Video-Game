@@ -12,7 +12,7 @@ function player_animations(){
 	//Facing
 	if(dead){
 		//death animation
-		play_animation_stop(sPlayer_death,.2)
+		play_animation_stop(sPlayer_death,.2);
 	}
 	else{//if we're not dead
 		

@@ -48,7 +48,7 @@ function player_death(){
 ///@funct			player_death
 ///@desc			execute player death sequence
 	dead=true;
-	cork_shoot_falling=false;
+	cork_shoot_falling=0;
 	image_index=0;
 	//K_override=1;//no bounce
 	drop_tool();
@@ -72,5 +72,6 @@ function cork_shoot(){
 		var _shoe_instance_id = instance_create_layer(x,y,"Instances",oShoe);
 		_shoe_instance_id.tool_facing=oPlayer.player_facing;
 		collision_cork_shoot(_shoe_instance_id);//takes care of player jump vsp and shoe vsp and hsp
+		audio_play_sound(souCork_Shoot,1,false);
 	}
 }
