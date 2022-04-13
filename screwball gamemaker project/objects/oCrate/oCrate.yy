@@ -35,8 +35,8 @@
     {"propertyId":{"name":"frict","path":"objects/oSolid/oSolid.yy",},"objectId":{"name":"oSolid","path":"objects/oSolid/oSolid.yy",},"value":".1","resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMOverriddenProperty",},
   ],
   "parent": {
-    "name": "Objects",
-    "path": "folders/Objects.yy",
+    "name": "Solids",
+    "path": "folders/Objects/Solids.yy",
   },
   "resourceVersion": "1.0",
   "name": "oCrate",

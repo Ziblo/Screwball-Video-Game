@@ -49,8 +49,8 @@
     {"propertyId":{"name":"mass","path":"objects/oSolid/oSolid.yy",},"objectId":{"name":"oSolid","path":"objects/oSolid/oSolid.yy",},"value":"12","resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMOverriddenProperty",},
   ],
   "parent": {
-    "name": "Player",
-    "path": "folders/Objects/Player.yy",
+    "name": "Objects",
+    "path": "folders/Objects.yy",
   },
   "resourceVersion": "1.0",
   "name": "oPlayer",

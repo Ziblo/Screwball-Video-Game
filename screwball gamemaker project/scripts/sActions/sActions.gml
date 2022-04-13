@@ -56,7 +56,9 @@ function player_death(){
 function play_animation_stop(spr_indx,_speed=1){
 //plays an animation until last frame
 	sprite_index=spr_indx;
-	image_index=min(image_index+1*_speed,sprite_get_number(spr_indx)-1);
+	var _total_frames = sprite_get_number(spr_indx)-1;
+	image_index=min(image_index+_speed, _total_frames);
+	return;
 }
 function play_animation_repeat(spr_indx,_speed=1){
 //plays an animation and repeats it

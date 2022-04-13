@@ -69,8 +69,8 @@
   ],
   "nineSlice": null,
   "parent": {
-    "name": "sMisc",
-    "path": "folders/Sprites/sMisc.yy",
+    "name": "sUtility",
+    "path": "folders/Sprites/sUtility.yy",
   },
   "resourceVersion": "1.0",
   "name": "sCamera",

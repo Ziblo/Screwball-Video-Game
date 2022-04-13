@@ -40,8 +40,8 @@
   ],
   "overriddenProperties": [],
   "parent": {
-    "name": "Objects",
-    "path": "folders/Objects.yy",
+    "name": "Solids",
+    "path": "folders/Objects/Solids.yy",
   },
   "resourceVersion": "1.0",
   "name": "oSolid",

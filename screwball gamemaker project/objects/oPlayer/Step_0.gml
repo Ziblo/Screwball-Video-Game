@@ -66,7 +66,7 @@ K_override = -1 + 1*(cork_shoot_falling==2);
 		}
 	}
 	else{
-		player_death();
+		//player_death(); //if we're already dead, we don't need to die
 }
 #endregion
 
