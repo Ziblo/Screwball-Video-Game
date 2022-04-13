@@ -12,7 +12,7 @@ if(pause_input&&!old_pause_input){//key initial press
 	//toggle pause game
 	paused = !paused;
 	if (!paused){
-		instance_activate_layer("Instances");
+		instance_activate_layer("Solids");
 		surface_free(paused_surface);
 		paused_surface = -1;
 	}
