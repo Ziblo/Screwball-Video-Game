@@ -21,6 +21,7 @@ collision_object_array=[oCrate,oWall];//objects u can collide with (upon creatio
 */
 //player state constants & variables
 hp=max_hp;
+old_hp=max_hp;
 dead=false;
 /*
 player_facing=1;//1 is right, -1 is left

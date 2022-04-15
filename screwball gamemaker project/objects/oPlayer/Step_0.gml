@@ -32,8 +32,6 @@
 	#endregion
 #endregion
 
-K_override = -1 + 1*(cork_shoot_falling==2);
-
 //Apply player inputs
 #region Process Inputs
 	if(!dead){

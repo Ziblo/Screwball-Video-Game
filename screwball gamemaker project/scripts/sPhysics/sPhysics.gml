@@ -235,11 +235,11 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 		_instance.hsp=0;
 	
 	
-	if(_depth<3){//this controls the amount of times the function can call itself
+	if(_depth<5){//this controls the amount of times the function can call itself
 					//...which basically limits the amount of instances any one collision can look at
 		//between two solids horizontally
 		with(_instance){
-			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
+			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=other.instance_id){
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
 				_depth++;
@@ -247,7 +247,7 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 				//db_col_count++;
 			}
 			//between two solids verically
-			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
+			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=other.instance_id){
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
 				_depth++;
@@ -472,6 +472,7 @@ function player_physics(collision_objects=collision_object_array){
 	}
 	
 	//var _hsp=hsp; This also makes us not bounce off walls
+	cork_shoot_bounce=false;
 	
 	//colliding with another solid
 	if(place_meeting_or(x+hsp,y+vsp,collision_objects)){
@@ -500,8 +501,9 @@ function player_physics(collision_objects=collision_object_array){
 					sprite_index=sPlayer;
 				}
 				else{
-					player_collision(_instance,"v",K_override);//collide normally
+					player_collision(_instance,"v",0);//no energt loss
 					hp--; //lose health
+					cork_shoot_bounce=true;
 					if(hp==0) player_death();
 				}
 			}
@@ -675,18 +677,23 @@ function player_collision(_instance,h_or_v,_K=-1,_depth=0){
 			player_collision(_inst_deeper,"v",-1,_depth)
 		}*/
 		
-		//player between two objects
-		if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
-			//collide with that object too
-			var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
-			_depth++;
-			player_collision(_inst_deeper,"h",-1,_depth);
-		}
-		if(place_meeting_or(x,y+vsp,collision_object_array)&&instance_place_or(x,y+vsp,collision_object_array)[0]!=_instance){
-			//collide with that object too
-			var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
-			_depth++;
-			player_collision(_inst_deeper,"v",-1,_depth);
+		//trigger chain collisions
+		with(_instance){
+			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
+				//collide with other solid
+				var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
+				_depth++;
+				collision(_inst_deeper,"h",-1,_depth);
+				//db_col_count++;
+			}
+			//between two solids verically
+			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
+				//collide with other solid
+				var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
+				_depth++;
+				collision(_inst_deeper,"v",-1,_depth);
+				//db_col_count++;
+			}
 		}
 
 	}
@@ -696,8 +703,8 @@ function collision_cork_shoot(shoe_inst){
 	//we're solving for it so that the player speed after is always the jump speed
 	//(m1+m2)vi = m1v1+m2v2
 	//v2 = (vi(m1+m2)-m1v1)/m2
-	var _player_vsp_after_jump = -oPlayer.jump_speed;
-	shoe_inst.vsp = (oPlayer.vsp*(oPlayer.mass+ shoe_inst.mass)-oPlayer.mass*(_player_vsp_after_jump))/shoe_inst.mass;
+	var _player_vsp_after_jump = min(-oPlayer.jump_speed,vsp-oPlayer.jump_speed); //if going up, jump doesn't slow you down, but speeds you up (Bounce boost?)
+	shoe_inst.vsp = oPlayer.jump_speed;//(oPlayer.vsp*(oPlayer.mass+ shoe_inst.mass)-oPlayer.mass*(_player_vsp_after_jump))/shoe_inst.mass;
 	shoe_inst.hsp = oPlayer.hsp; //hsp does not change
 	oPlayer.vsp=_player_vsp_after_jump;
 }

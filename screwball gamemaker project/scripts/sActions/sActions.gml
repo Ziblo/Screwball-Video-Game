@@ -50,7 +50,8 @@ function player_death(){
 	dead=true;
 	cork_shoot_falling=0;
 	image_index=0;
-	//K_override=1;//no bounce
+	K_override=.8;//no bounce
+	audio_play_sound(souDeath,1,false);
 	drop_tool();
 }
 function play_animation_stop(spr_indx,_speed=1){

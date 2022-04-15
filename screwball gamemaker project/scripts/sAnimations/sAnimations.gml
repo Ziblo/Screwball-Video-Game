@@ -27,9 +27,12 @@ function player_animations(){
 			play_animation_repeat(sPlayer_spin)
 		}
 		else if(cork_shoot_falling==2){
-			play_animation_repeat(sPlayer_spin,5)//faster!
+			if (cork_shoot_bounce){
+				sprite_index=sPlayer_death;
+				image_index=1;
+			}
+			else play_animation_repeat(sPlayer_spin,5)//faster!
 		}
-		
 		//otherwise default
 		else sprite_index=sPlayer;
 	}
