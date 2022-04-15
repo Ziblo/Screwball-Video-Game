@@ -238,22 +238,35 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 	if(_depth<5){//this controls the amount of times the function can call itself
 					//...which basically limits the amount of instances any one collision can look at
 		//between two solids horizontally
-		with(_instance){
-			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
+		
+		
+		//trigger chain collisions
+		with (_instance){ //will it hit something?
+			if(place_meeting_or(x+hsp,y,collision_object_array)){ //still going to hit something
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
 				_depth++;
-				collision(_inst_deeper,"h",-1,_depth);
-				//db_col_count++;
+				collision(_inst_deeper,"h",0,_depth);
 			}
-			//between two solids verically
-			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
+			if(place_meeting_or(x,y+vsp,collision_object_array)){
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
 				_depth++;
-				collision(_inst_deeper,"v",-1,_depth);
-				//db_col_count++;
+				collision(_inst_deeper,"v",0,_depth);
 			}
+		}
+		//will we hit something?
+		if(place_meeting_or(x+hsp,y,collision_object_array)){
+			//collide with other solid
+			var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
+			_depth++;
+			collision(_inst_deeper,"h",0,_depth);
+		}
+		if(place_meeting_or(x,y+vsp,collision_object_array)){
+			//collide with other solid
+			var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
+			_depth++;
+			collision(_inst_deeper,"v",0,_depth);
 		}
 	}
 }
@@ -415,7 +428,7 @@ function collision2(_instance,h_or_v,_K=-1,_depth=0){
 	
 	
 	if(_depth<3){//this controls the amount of times the function can call itself
-					//...which basically limits the amount of instances any one collision can look at
+		//...which basically limits the amount of instances any one collision can look at
 		//between two solids horizontally
 		with(_instance){
 			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
@@ -677,25 +690,45 @@ function player_collision(_instance,h_or_v,_K=-1,_depth=0){
 			player_collision(_inst_deeper,"v",-1,_depth)
 		}*/
 		
+			/*
+			//find one that's not other.id
+			repeat (array_length(instance_place_or(x+hsp,y,collision_object_array))){
+				var _i = 0;
+				if (instance_place_or(x+hsp,y,collision_object_array)[_i]!=other.id) break;
+				_i++;
+			}
+			*/
+			
+			
+			
 		//trigger chain collisions
-		with(_instance){
-			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
+		with (_instance){ //will it hit something?
+			if(place_meeting_or(x+hsp,y,collision_object_array)){ //still going to hit something
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
 				_depth++;
-				collision(_inst_deeper,"h",-1,_depth);
-				//db_col_count++;
+				collision(_inst_deeper,"h",0,_depth);
 			}
-			//between two solids verically
-			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
+			if(place_meeting_or(x,y+vsp,collision_object_array)){
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
 				_depth++;
-				collision(_inst_deeper,"v",-1,_depth);
-				//db_col_count++;
+				collision(_inst_deeper,"v",0,_depth);
 			}
 		}
-
+		//will we hit something?
+		if(place_meeting_or(x+hsp,y,collision_object_array)){
+			//collide with other solid
+			var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
+			_depth++;
+			collision(_inst_deeper,"h",0,_depth);
+		}
+		if(place_meeting_or(x,y+vsp,collision_object_array)){
+			//collide with other solid
+			var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
+			_depth++;
+			collision(_inst_deeper,"v",0,_depth);
+		}
 	}
 }
 function collision_cork_shoot(shoe_inst){
