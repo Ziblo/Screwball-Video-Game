@@ -239,7 +239,7 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 					//...which basically limits the amount of instances any one collision can look at
 		//between two solids horizontally
 		with(_instance){
-			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=other.instance_id){
+			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
 				_depth++;
@@ -247,7 +247,7 @@ function collision(_instance,h_or_v,_K=-1,_depth=0){
 				//db_col_count++;
 			}
 			//between two solids verically
-			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=other.instance_id){
+			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
 				_depth++;
@@ -418,7 +418,7 @@ function collision2(_instance,h_or_v,_K=-1,_depth=0){
 					//...which basically limits the amount of instances any one collision can look at
 		//between two solids horizontally
 		with(_instance){
-			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
+			if(place_meeting_or(x+hsp,y,collision_object_array)&&instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x+hsp,y,collision_object_array)[0];
 				_depth++;
@@ -426,7 +426,7 @@ function collision2(_instance,h_or_v,_K=-1,_depth=0){
 				db_col_count++;
 			}
 			//between two solids verically
-			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=_instance){
+			if(place_meeting_or(x,y+vsp,collision_object_array) && instance_place_or(x+hsp,y,collision_object_array)[0]!=other.id){
 				//collide with other solid
 				var _inst_deeper=instance_place_or(x,y+vsp,collision_object_array)[0];
 				_depth++;
