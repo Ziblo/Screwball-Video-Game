@@ -15,6 +15,7 @@
 		player_Physics
 		player_collision
 		collision_cork_shoot
+		check_for_shoe_collision
 */
 
 function array_addition(array1,array2){
@@ -740,4 +741,19 @@ function collision_cork_shoot(shoe_inst){
 	shoe_inst.vsp = oPlayer.jump_speed;//(oPlayer.vsp*(oPlayer.mass+ shoe_inst.mass)-oPlayer.mass*(_player_vsp_after_jump))/shoe_inst.mass;
 	shoe_inst.hsp = oPlayer.hsp; //hsp does not change
 	oPlayer.vsp=_player_vsp_after_jump;
+}
+function check_for_shoe_collision(){
+///@funct			check_for_shoe_collision()
+///@desc			Checks player object for a collision with shoe
+	if (sign(vsp)>0 && !in_shoe)
+	{//if wer're falling without a shoe
+		if (collision_line(x,y,x+hsp,y+vsp,oShoe,false,false))
+		{//if the bottom of the player is in the shoe
+			//go into shoe
+		}
+	    else if (place_meeting_or(x,y+vsp, collision_object_array))
+		{//if we're hitting something other than a shoe
+			//take damage and bounce
+		}
+	}
 }
