@@ -124,10 +124,16 @@ function physics(collision_objects=collision_object_array){
 		vsp+=global.grav_accel;
 	}
 	
-	//on_ground friction
 	if(on_ground){
+		var _instance = instance_place_or(x,y+3,collision_object_array)[0];
 		//basically(hsp = hsp-frict) except it works in both directions and doesn't go past 0.
-		hsp=sign(hsp)*max(abs(hsp)-frict,0);
+		//hsp=sign(hsp)*max(abs(hsp)-ground_frict,0); //BEFORE relative fix
+		//approach speed of 0 relative to instance.
+		if (_instance == noone) show_error("on ground but nothing there?",1);
+		var _relative_hsp = hsp - _instance.hsp;
+		_relative_hsp = sign(_relative_hsp)*max(abs(_relative_hsp)-frict,0);
+		hsp = _instance.hsp + _relative_hsp; //friction towards 0 relative hsp
+		y+=_instance.vsp;
 	}
 	
 	//colliding with another solid
@@ -461,9 +467,18 @@ function player_physics(collision_objects=collision_object_array){
 	}
 	
 	//on_ground friction
-	if(on_ground && !abs(hinput)){
+	if(on_ground){
+		var _instance = instance_place_or(x,y+3,collision_object_array)[0];
+		if (_instance == noone) show_error("on ground but nothing there?",1);
 		//basically(hsp = hsp-frict) except it works in both directions and doesn't go past 0.
-		hsp=sign(hsp)*max(abs(hsp)-ground_frict,0);
+		//hsp=sign(hsp)*max(abs(hsp)-ground_frict,0); //BEFORE relative fix
+		//approach speed of 0 relative to instance.
+		if (!abs(hinput)) {
+			var _relative_hsp = hsp - _instance.hsp;
+			_relative_hsp = sign(_relative_hsp)*max(abs(_relative_hsp)-ground_frict,0);
+			hsp = _instance.hsp + _relative_hsp; //friction towards 0 relative hsp
+		}
+		y+=_instance.vsp;
 	}
 	
 	//falling state
@@ -503,10 +518,10 @@ function player_physics(collision_objects=collision_object_array){
 			player_collision(_instance,"h",K_override);
 		}
 		if(place_meeting_or(x,y+sign(vsp), collision_objects)){	//VERTICAL COLLISION
-			
-			// /* This is the code for landing in the shoe. But I'm gonna move it somewhere else so it's easier to find.
+			on_ground = true;
+			/* This is the code for landing in the shoe. But I moved it somewhere else so it's easier to find.
 			if(sign(vsp)==1 && !in_shoe && !dead){//if we're landing without a shoe
-				if(position_meeting(x,y-2,oShoe)){//if landing in a shoe (or holding a shoe)
+				if(position_meeting(x,y-2,oShoe)){//if landing in a shoe (or holding a shoe?)
 					player_collision(instance_position(x,y-2,oShoe),"v",1)//inelastic collision with shoe
 					instance_destroy(instance_position(x,y-2,oShoe))//destroy shoe
 					//holding_inst=noone;
@@ -514,7 +529,7 @@ function player_physics(collision_objects=collision_object_array){
 					cork_shoot_falling=false;
 					sprite_index=sPlayer;
 				}
-				else{
+				else{// land unsafe
 					player_collision(_instance,"v",0);//no energt loss
 					hp--; //lose health
 					cork_shoot_bounce=true;
@@ -524,12 +539,10 @@ function player_physics(collision_objects=collision_object_array){
 			else{//if we're not landing without a shoe
 				player_collision(_instance,"v",K_override);//v collide normally
 			}//*/
-			if(cork_shoot_falling==2){
-				audio_play_sound(souOuch,1,false);
-			}
 			
 			
-			//player_collision(_instance,"v",K_override);//v collide normally
+			
+			player_collision(_instance,"v",K_override);//v collide normally
 			
 		}
 	}
@@ -745,15 +758,30 @@ function collision_cork_shoot(shoe_inst){
 function check_for_shoe_collision(){
 ///@funct			check_for_shoe_collision()
 ///@desc			Checks player object for a collision with shoe
-	if (sign(vsp)>0 && !in_shoe)
+	if (sign(vsp)>0 && !in_shoe && !dead)
 	{//if wer're falling without a shoe
-		if (collision_line(x,y,x+hsp,y+vsp,oShoe,false,false))
+		var _instance = collision_line(x,y,x+hsp,y+vsp,oShoe,false,false);
+		if (_instance != noone)
 		{//if the bottom of the player is in the shoe
 			//go into shoe
+			player_collision(_instance,"v",1);//inelastic collision with shoe
+			instance_destroy(_instance);//destroy shoe
+			in_shoe=true;//we in da shoe now boiis B)
+			cork_shoot_falling=false;
+			sprite_index=sPlayer;
 		}
 	    else if (place_meeting_or(x,y+vsp, collision_object_array))
 		{//if we're hitting something other than a shoe
 			//take damage and bounce
+			var _instance = instance_place_or(x, y+vsp, collision_object_array)[0];
+			if (_instance == noone) show_error("no collision object found",true);
+			player_collision(_instance,"v", .3);//30% energy loss
+			hp--; //lose health
+			cork_shoot_bounce=true;
+			if(cork_shoot_falling==2){
+				audio_play_sound(souOuch,1,false);
+			}
+			if(hp==0) player_death();
 		}
 	}
 }

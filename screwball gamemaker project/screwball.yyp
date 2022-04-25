@@ -4,6 +4,7 @@
     {"id":{"name":"oSolid","path":"objects/oSolid/oSolid.yy",},"order":0,},
     {"id":{"name":"sPlayer_spin","path":"sprites/sPlayer_spin/sPlayer_spin.yy",},"order":0,},
     {"id":{"name":"sGameController","path":"sprites/sGameController/sGameController.yy",},"order":1,},
+    {"id":{"name":"pMovingPlatform2","path":"paths/pMovingPlatform2/pMovingPlatform2.yy",},"order":1,},
     {"id":{"name":"oKey","path":"objects/oKey/oKey.yy",},"order":1,},
     {"id":{"name":"souOuch","path":"sounds/souOuch/souOuch.yy",},"order":1,},
     {"id":{"name":"sShoe","path":"sprites/sShoe/sShoe.yy",},"order":1,},

@@ -81,6 +81,9 @@
 	
 #endregion
 
+//check for shoe collision
+check_for_shoe_collision();
+
 //Collisions and gravity
 player_physics(collision_object_array);
 
